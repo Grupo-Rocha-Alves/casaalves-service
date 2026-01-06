@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RegisterDto, LoginDto, ChangePasswordDto, UpdateUserDto, ListUsersFilters } from '../dtos/authDto';
 import { createUser, findUserByLogin, findUserById, findUserByIdWithPassword, updateUserPassword, updateUser, listUsers } from '../repository/authRepository';
+import { calculatePagination } from '../helpers/repositoryHelper';
 
 export async function serviceRegister(dto: RegisterDto) {
   const existingUser = await findUserByLogin(dto.login);
@@ -142,15 +143,10 @@ export async function serviceListUsers(filters: ListUsersFilters) {
     limit,
   });
 
-  const totalPages = Math.ceil(total / limit);
+  const { pagination } = calculatePagination(total, page, limit);
 
   return {
     users,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages,
-    },
+    pagination,
   };
 }

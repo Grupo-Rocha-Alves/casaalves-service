@@ -1,37 +1,29 @@
 import { db } from "../db";
 import { tbLogs, tbUsuarios } from "../db/schema";
-import { eq, and, gte, lte, like, sql } from "drizzle-orm";
+import { eq, and, gte, lte, like, sql, count } from "drizzle-orm";
 import { ListLogsFilters } from "../dtos/logDto";
+import { buildFilterConditions, calculatePagination } from "../helpers/repositoryHelper";
 
 export const listLogs = async (filters: ListLogsFilters) => {
   const { idUsuario, acao, dataInicio, dataFim, page = 1, limit = 10 } = filters;
 
-  const conditions = [];
+  const conditionBuilders = {
+    idUsuario: (value: number) => eq(tbLogs.idUsuario, value),
+    acao: (value: string) => like(tbLogs.acao, `%${value}%`),
+    dataInicio: (value: string) => gte(tbLogs.dataHora, value),
+    dataFim: (value: string) => lte(tbLogs.dataHora, value),
+  };
 
-  if (idUsuario) {
-    conditions.push(eq(tbLogs.idUsuario, idUsuario));
-  }
-
-  if (acao) {
-    conditions.push(like(tbLogs.acao, `%${acao}%`));
-  }
-
-  if (dataInicio) {
-    conditions.push(gte(tbLogs.dataHora, dataInicio));
-  }
-
-  if (dataFim) {
-    conditions.push(lte(tbLogs.dataHora, dataFim));
-  }
-
+  const conditions = buildFilterConditions({ idUsuario, acao, dataInicio, dataFim }, conditionBuilders);
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-  const [{ count }] = await db
-    .select({ count: sql<number>`cast(count(*) as integer)` })
+  const [{ total }] = await db
+    .select({ total: count() })
     .from(tbLogs)
     .where(whereClause);
 
-  const offset = (page - 1) * limit;
+  const { offset } = calculatePagination(Number(total), page, limit);
+
   const logs = await db
     .select({
       idLog: tbLogs.idLog,
@@ -49,9 +41,6 @@ export const listLogs = async (filters: ListLogsFilters) => {
 
   return {
     logs,
-    total: count,
-    page,
-    limit,
-    totalPages: Math.ceil(count / limit),
+    total: Number(total),
   };
 };

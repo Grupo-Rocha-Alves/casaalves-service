@@ -1,12 +1,12 @@
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "../dtos/authDto";
-import { registrarLog } from "../helpers/logHelper";
+import { registerLog } from "../helpers/logHelper";
 
-export const logMiddleware = (descricaoAcao: string) => {
+export const logMiddleware = (actionDescription: string) => {
   return async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
-    const metodo = req.method.toUpperCase();
+    const method = req.method.toUpperCase();
     
-    if (metodo === 'GET') {
+    if (method === 'GET') {
       next();
       return;
     }
@@ -29,7 +29,7 @@ export const logMiddleware = (descricaoAcao: string) => {
         }
         
         if (userId) {
-          registrarLog(userId, descricaoAcao).catch((error) => {
+          registerLog(userId, actionDescription).catch((error) => {
             console.error("Erro ao registrar log no middleware:", error);
           });
         }

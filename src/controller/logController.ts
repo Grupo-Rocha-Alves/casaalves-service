@@ -21,12 +21,7 @@ export const getLogs = async (req: AuthRequest, res: Response): Promise<void> =>
     res.status(200).json({
       success: true,
       data: result.logs,
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        total: result.total,
-        totalPages: result.totalPages,
-      },
+      pagination: result.pagination,
     });
   } catch (error: any) {
     console.error("Erro ao listar logs:", error);

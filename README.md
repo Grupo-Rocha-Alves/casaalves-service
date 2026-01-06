@@ -31,6 +31,4 @@ npm run db:generate # Gera migrations
 
 ## Hospedagem
 
-- Serviço hospedado na [Render](https://dashboard.render.com/)
-    - https://casaalves-service.onrender.com/health
-- Banco de dados PostgreSQL hospedado na [Neeon](https://console.neon.tech/app/)
+- Banco de dados PostgreSQL hospedado na [Neon](https://console.neon.tech/app/)

@@ -1,10 +1,9 @@
 import { db } from "../db";
 import { tbLogs } from "../db/schema";
 
-export const registrarLog = async (idUsuario: number, acao: string): Promise<void> => {
+export const registerLog = async (userId: number, action: string): Promise<void> => {
   try {
-    // Cria data/hora no timezone de São Paulo
-    const dataHoraSP = new Date().toLocaleString('pt-BR', { 
+    const dateTimeSP = new Date().toLocaleString('pt-BR', { 
       timeZone: 'America/Sao_Paulo',
       year: 'numeric',
       month: '2-digit',
@@ -15,29 +14,28 @@ export const registrarLog = async (idUsuario: number, acao: string): Promise<voi
       hour12: false
     });
     
-    // Converte para formato ISO que o PostgreSQL aceita
-    const [data, hora] = dataHoraSP.split(', ');
-    const [dia, mes, ano] = data.split('/');
-    const dataHoraISO = `${ano}-${mes}-${dia} ${hora}`;
+    const [date, time] = dateTimeSP.split(', ');
+    const [day, month, year] = date.split('/');
+    const dateTimeISO = `${year}-${month}-${day} ${time}`;
     
     await db.insert(tbLogs).values({
-      idUsuario,
-      acao,
-      dataHora: dataHoraISO,
+      idUsuario: userId,
+      acao: action,
+      dataHora: dateTimeISO,
     });
   } catch (error) {
     console.error("Erro ao registrar log:", error);
   }
 };
 
-export const acaoLog = {
-  criar: (entidade: string) => `Criou ${entidade}`,
-  atualizar: (entidade: string, id?: string | number) => 
-    `Atualizou ${entidade}${id ? ` (ID: ${id})` : ''}`,
-  deletar: (entidade: string, id?: string | number) => 
-    `Deletou ${entidade}${id ? ` (ID: ${id})` : ''}`,
+export const logAction = {
+  create: (entity: string) => `Criou ${entity}`,
+  update: (entity: string, id?: string | number) => 
+    `Atualizou ${entity}${id ? ` (ID: ${id})` : ''}`,
+  delete: (entity: string, id?: string | number) => 
+    `Deletou ${entity}${id ? ` (ID: ${id})` : ''}`,
   login: () => "Realizou login",
   logout: () => "Realizou logout",
-  alterarSenha: () => "Alterou a senha",
-  custom: (descricao: string) => descricao,
+  changePassword: () => "Alterou a senha",
+  custom: (description: string) => description,
 };

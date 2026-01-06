@@ -2,6 +2,8 @@ import express from 'express';
 import cors from "cors";
 import authRouter from "./routes/authRoutes";
 import logRouter from "./routes/logRoutes";
+import salesRouter from "./routes/salesRoutes";
+import expensesRouter from "./routes/expensesRoutes";
 
 const app = express();
 
@@ -19,5 +21,7 @@ app.get('/health', (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/logs", logRouter);
+app.use("/api/sales", salesRouter);
+app.use("/api/expenses", expensesRouter);
 
 export default app;
