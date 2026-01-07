@@ -18,6 +18,7 @@ export async function serviceRegister(dto: RegisterDto) {
     nome: dto.nome,
     login: dto.login,
     senha: hashedPassword,
+    nivelAcesso: dto.nivelAcesso,
   });
 
   return newUser;

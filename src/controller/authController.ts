@@ -4,7 +4,7 @@ import { serviceRegister, serviceLogin, serviceGetUserById, serviceChangePasswor
 
 export const register = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { nome, login, senha } = req.body as RegisterDto;
+    const { nome, login, senha, nivelAcesso } = req.body as RegisterDto;
 
     if (!nome || !login || !senha) {
       res.status(400).json({ 
@@ -14,7 +14,7 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
-    const newUser = await serviceRegister({ nome, login, senha });
+    const newUser = await serviceRegister({ nome, login, senha, nivelAcesso });
 
     res.status(201).json({
       success: true,
