@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest, RegisterDto, LoginDto, ChangePasswordDto, UpdateUserDto, ListUsersFilters } from '../dtos/authDto';
-import { serviceRegister, serviceLogin, serviceGetUserById, serviceChangePassword, serviceUpdateUser, serviceListUsers } from '../service/authService';
+import { serviceRegister, serviceLogin, serviceGetUserById, serviceChangePassword, serviceUpdateUser, serviceListUsers, serviceDeleteUser } from '../service/authService';
 
 export const register = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -231,7 +231,7 @@ export const updateUser = async (req: AuthRequest, res: Response): Promise<void>
 
 export const listUsers = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { nome, login, nivelAcesso, page, limit } = req.query;
+    const { nome, nivelAcesso, page, limit } = req.query;
 
     const filters: ListUsersFilters = {};
 
@@ -262,6 +262,43 @@ export const listUsers = async (req: AuthRequest, res: Response): Promise<void> 
     res.status(500).json({ 
       success: false, 
       message: 'Erro ao listar usuários' 
+    });
+  }
+};
+
+export const deleteUser = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const targetUserId = parseInt(req.params.id);
+    
+    if (isNaN(targetUserId)) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'ID de usuário inválido' 
+      });
+      return;
+    }
+
+    const deletedUser = await serviceDeleteUser(targetUserId);
+
+    res.status(200).json({
+      success: true,
+      message: 'Usuário excluído com sucesso',
+      data: deletedUser,
+    });
+  } catch (error: any) {
+    console.error('Erro ao excluir usuário:', error);
+    
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ 
+        success: false, 
+        message: error.message 
+      });
+      return;
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: 'Erro ao excluir usuário' 
     });
   }
 };

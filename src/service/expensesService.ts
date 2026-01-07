@@ -91,3 +91,38 @@ export async function serviceListExpenses(filters: ListExpensesFilters) {
     pagination,
   };
 }
+
+export async function serviceExportExpensesToCSV(filters: ListExpensesFilters) {
+  const { despesas } = await listExpenses(filters);
+
+  const header = ['ID', 'Data', 'Mês', 'Ano', 'Dia da Semana', 'Tipo', 'Categoria', 'Descrição', 'Valor (R$)'];
+
+  const rows = despesas.map(despesa => [
+    despesa.idDespesa,
+    formatDateForCSV(despesa.data),
+    despesa.mes,
+    despesa.ano,
+    despesa.diaSemana,
+    `"${despesa.tipo}"`,
+    `"${despesa.categoria}"`,
+    `"${despesa.descricao.replace(/"/g, '""')}"`,
+    formatCurrency(despesa.valor)
+  ]);
+
+  const csvContent = [
+    header.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+
+  return csvContent;
+}
+
+function formatDateForCSV(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-BR');
+}
+
+function formatCurrency(value: string | number): string {
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+  return numValue.toFixed(2).replace('.', ',');
+}

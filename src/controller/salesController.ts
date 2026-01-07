@@ -5,7 +5,8 @@ import {
   serviceGetSaleById, 
   serviceUpdateSale, 
   serviceDeleteSale, 
-  serviceListSales 
+  serviceListSales,
+  serviceExportSalesToCSV
 } from '../service/salesService';
 
 export const createSale = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -180,6 +181,36 @@ export const listSales = async (req: AuthRequest, res: Response): Promise<void> 
     res.status(500).json({ 
       success: false, 
       message: 'Erro ao listar vendas' 
+    });
+  }
+};
+
+export const exportSalesToCSV = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { mes, ano, dataInicio, dataFim } = req.query;
+
+    const filters: ListSalesFilters = {
+      mes: mes ? parseInt(mes as string) : undefined,
+      ano: ano ? parseInt(ano as string) : undefined,
+      dataInicio: dataInicio as string,
+      dataFim: dataFim as string,
+      page: 1,
+      limit: 999999,
+    };
+
+    const csvContent = await serviceExportSalesToCSV(filters);
+
+    const fileName = `vendas_${new Date().toISOString().split('T')[0]}.csv`;
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    
+    res.write('\uFEFF');
+    res.end(csvContent);
+  } catch (error: any) {
+    console.error('Erro ao exportar vendas:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao exportar vendas',
     });
   }
 };

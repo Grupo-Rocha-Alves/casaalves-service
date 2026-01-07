@@ -120,10 +120,24 @@ export const listUsers = async (filters: ListUsersFilters) => {
     .from(tbUsuarios)
     .where(whereClause)
     .limit(limit)
-    .offset(offset);
+    .offset(offset)
+    .orderBy(tbUsuarios.idUsuario);
 
   return {
     users,
     total: Number(total),
   };
+};
+
+export const deleteUser = async (userId: number) => {
+  const [deletedUser] = await db
+    .delete(tbUsuarios)
+    .where(eq(tbUsuarios.idUsuario, userId))
+    .returning({
+      idUsuario: tbUsuarios.idUsuario,
+      nome: tbUsuarios.nome,
+      login: tbUsuarios.login,
+    });
+
+  return deletedUser;
 };

@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { tbControleVendas } from "../db/schema";
-import { eq, and, gte, lte, count } from "drizzle-orm";
+import { eq, and, gte, lte, count, sql } from "drizzle-orm";
 import { ListSalesFilters } from "../dtos/salesDto";
 import { buildUpdateData, buildFilterConditions, calculatePagination } from "../helpers/repositoryHelper";
 
@@ -102,7 +102,8 @@ export const listSales = async (filters: ListSalesFilters) => {
     .from(tbControleVendas)
     .where(whereClause)
     .limit(limit)
-    .offset(offset);
+    .offset(offset)
+    .orderBy(sql`${tbControleVendas.data} DESC`);
 
   return {
     vendas,

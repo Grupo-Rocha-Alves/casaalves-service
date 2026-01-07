@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RegisterDto, LoginDto, ChangePasswordDto, UpdateUserDto, ListUsersFilters } from '../dtos/authDto';
-import { createUser, findUserByLogin, findUserById, findUserByIdWithPassword, updateUserPassword, updateUser, listUsers } from '../repository/authRepository';
+import { createUser, findUserByLogin, findUserById, findUserByIdWithPassword, updateUserPassword, updateUser, listUsers, deleteUser } from '../repository/authRepository';
 import { calculatePagination } from '../helpers/repositoryHelper';
 
 export async function serviceRegister(dto: RegisterDto) {
@@ -149,4 +149,16 @@ export async function serviceListUsers(filters: ListUsersFilters) {
     users,
     pagination,
   };
+}
+
+export async function serviceDeleteUser(userId: number) {
+  const existingUser = await findUserById(userId);
+
+  if (!existingUser) {
+    throw new Error('Usuário não encontrado');
+  }
+
+  const deletedUser = await deleteUser(userId);
+
+  return deletedUser;
 }

@@ -5,7 +5,8 @@ import {
   serviceGetExpenseById, 
   serviceUpdateExpense, 
   serviceDeleteExpense, 
-  serviceListExpenses 
+  serviceListExpenses,
+  serviceExportExpensesToCSV
 } from '../service/expensesService';
 
 export const createExpense = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -206,6 +207,38 @@ export const listExpenses = async (req: AuthRequest, res: Response): Promise<voi
     res.status(500).json({ 
       success: false, 
       message: 'Erro ao listar despesas' 
+    });
+  }
+};
+
+export const exportExpensesToCSV = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { mes, ano, tipo, categoria, dataInicio, dataFim } = req.query;
+
+    const filters: ListExpensesFilters = {
+      mes: mes ? parseInt(mes as string) : undefined,
+      ano: ano ? parseInt(ano as string) : undefined,
+      tipo: tipo as string,
+      categoria: categoria as string,
+      dataInicio: dataInicio as string,
+      dataFim: dataFim as string,
+      page: 1,
+      limit: 999999,
+    };
+
+    const csvContent = await serviceExportExpensesToCSV(filters);
+
+    const fileName = `despesas_${new Date().toISOString().split('T')[0]}.csv`;
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    
+    res.write('\uFEFF');
+    res.end(csvContent);
+  } catch (error: any) {
+    console.error('Erro ao exportar despesas:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao exportar despesas',
     });
   }
 };
