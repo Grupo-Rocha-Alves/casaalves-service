@@ -43,6 +43,16 @@ export const findSaleById = async (id: number) => {
   return sale;
 };
 
+export const findSaleByDate = async (data: string) => {
+  const [sale] = await db
+    .select()
+    .from(tbControleVendas)
+    .where(eq(tbControleVendas.data, data))
+    .limit(1);
+
+  return sale;
+};
+
 export const updateSale = async (
   saleId: number,
   data: {

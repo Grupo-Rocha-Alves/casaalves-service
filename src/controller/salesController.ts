@@ -37,6 +37,14 @@ export const createSale = async (req: AuthRequest, res: Response): Promise<void>
   } catch (error: any) {
     console.error('Erro ao cadastrar venda:', error);
     
+    if (error.message === 'Já existe uma venda cadastrada para esta data') {
+      res.status(409).json({ 
+        success: false, 
+        message: error.message 
+      });
+      return;
+    }
+    
     res.status(500).json({ 
       success: false, 
       message: 'Erro ao cadastrar venda' 

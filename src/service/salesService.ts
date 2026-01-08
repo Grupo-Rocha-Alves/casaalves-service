@@ -1,5 +1,5 @@
 import { CreateSaleDto, UpdateSaleDto, ListSalesFilters } from '../dtos/salesDto';
-import { createSales, findSaleById, updateSale, deleteSale, listSales } from '../repository/salesRepository';
+import { createSales, findSaleById, findSaleByDate, updateSale, deleteSale, listSales } from '../repository/salesRepository';
 import { formatDateForDatabase } from '../helpers/dateHelper';
 import { calculatePagination } from '../helpers/repositoryHelper';
 
@@ -19,6 +19,12 @@ const calculateTotalOfDay = (
 };
 
 export async function serviceCreateSale(dto: CreateSaleDto) {
+  // Verifica se já existe uma venda para esta data
+  const existingSale = await findSaleByDate(dto.data);
+  if (existingSale) {
+    throw new Error('Já existe uma venda cadastrada para esta data');
+  }
+
   const { month, year, dayOfWeek } = formatDateForDatabase(dto.data);
 
   const totalCartao = String(dto.totalCartao || '0.00');
