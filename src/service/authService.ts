@@ -5,6 +5,10 @@ import { createUser, findUserByLogin, findUserById, findUserByIdWithPassword, up
 import { calculatePagination } from '../helpers/repositoryHelper';
 
 export async function serviceRegister(dto: RegisterDto) {
+  if (dto.login.includes(' ')) {
+    throw new Error('O login não pode conter espaços');
+  }
+
   const existingUser = await findUserByLogin(dto.login);
 
   if (existingUser) {

@@ -14,6 +14,14 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
+    if (login.includes(' ')) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'O login não pode conter espaços' 
+      });
+      return;
+    }
+
     const newUser = await serviceRegister({ nome, login, senha, nivelAcesso });
 
     res.status(201).json({
