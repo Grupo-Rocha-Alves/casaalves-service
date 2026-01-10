@@ -15,7 +15,7 @@ const router = Router();
 
 router.post('/createSale', authMiddleware(2), logMiddleware(logAction.create('venda')), createSale);
 router.get('/getAllSales', authMiddleware(1), listSales);
-router.get('/exportSales', authMiddleware(1), exportSalesToCSV);
+router.get('/exportSales', authMiddleware(2), exportSalesToCSV);
 router.get('/getSaleById/:id', authMiddleware(1), getSaleById);
 router.patch('/updateSale/:id', authMiddleware(2), logMiddleware(logAction.update('venda')), updateSale);
 router.delete('/deleteSale/:id', authMiddleware(2), logMiddleware(logAction.delete('venda')), deleteSale);
