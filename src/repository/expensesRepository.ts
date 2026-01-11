@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { tbControleDespesas } from "../db/schema";
-import { eq, and, gte, lte, count, sql } from "drizzle-orm";
+import { eq, and, gte, lte, count, sql, ilike } from "drizzle-orm";
 import { ListExpensesFilters } from "../dtos/expensesDto";
 import { buildUpdateData, buildFilterConditions, calculatePagination } from "../helpers/repositoryHelper";
 
@@ -80,8 +80,8 @@ export const listExpenses = async (filters: ListExpensesFilters) => {
   const conditionBuilders = {
     mes: (value: number) => eq(tbControleDespesas.mes, value),
     ano: (value: number) => eq(tbControleDespesas.ano, value),
-    tipo: (value: string) => eq(tbControleDespesas.tipo, value),
-    categoria: (value: string) => eq(tbControleDespesas.categoria, value),
+    tipo: (value: string) => ilike(tbControleDespesas.tipo, value),
+    categoria: (value: string) => ilike(tbControleDespesas.categoria, value),
     dataInicio: (value: string) => gte(tbControleDespesas.data, value),
     dataFim: (value: string) => lte(tbControleDespesas.data, value),
   };

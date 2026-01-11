@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { tbUsuarios } from "../db/schema";
-import { eq, like, and, count } from "drizzle-orm";
+import { eq, ilike, and, count } from "drizzle-orm";
 import { RegisterDto, UpdateUserDto, ListUsersFilters } from "../dtos/authDto";
 import { buildUpdateData, buildFilterConditions, calculatePagination } from "../helpers/repositoryHelper";
 
@@ -96,7 +96,7 @@ export const listUsers = async (filters: ListUsersFilters) => {
   const { nome, nivelAcesso, page = 1, limit = 10 } = filters;
 
   const conditionBuilders = {
-    nome: (value: string) => like(tbUsuarios.nome, `%${value}%`),
+    nome: (value: string) => ilike(tbUsuarios.nome, `%${value}%`),
     nivelAcesso: (value: number) => eq(tbUsuarios.nivelAcesso, value),
   };
 
