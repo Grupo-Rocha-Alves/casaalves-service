@@ -151,7 +151,7 @@ export const listInvoices = async (filters: ListInvoicesFilters) => {
     .where(whereClause)
     .limit(limit)
     .offset(offset)
-    .orderBy(sql`${tbControleDuplicatas.dataVencimento} DESC`);
+    .orderBy(sql`${tbControleDuplicatas.data} DESC`);
 
   return {
     invoices,

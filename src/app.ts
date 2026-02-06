@@ -5,6 +5,7 @@ import logRouter from "./routes/logRoutes";
 import salesRouter from "./routes/salesRoutes";
 import expensesRouter from "./routes/expensesRoutes";
 import invoicesRouter from "./routes/invoicesRoutes";
+import dashboardRouter from "./routes/dashboardRoutes";
 import { performHealthCheck } from "./helpers/healthCheckHelper";
 
 const app = express();
@@ -38,5 +39,6 @@ app.use("/api/logs", logRouter);
 app.use("/api/sales", salesRouter);
 app.use("/api/expenses", expensesRouter);
 app.use("/api/invoices", invoicesRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 export default app;
