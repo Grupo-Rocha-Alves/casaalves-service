@@ -1,4 +1,4 @@
-import { pgTable, serial, date, integer, varchar, numeric, timestamp, unique } from "drizzle-orm/pg-core"
+import { pgTable, serial, date, integer, varchar, numeric, timestamp, unique, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const tbControleVendas = pgTable("tb_controle_vendas", {
@@ -41,4 +41,20 @@ export const tbControleDespesas = pgTable("tb_controle_despesas", {
 	categoria: varchar({ length: 45 }).notNull(),
 	descricao: varchar({ length: 255 }).notNull(),
 	valor: numeric({ precision: 10, scale:  2 }).default('0').notNull(),
+});
+
+export const tbControleDuplicatas = pgTable("tb_controle_duplicatas", {
+	idDuplicata: serial("id_duplicata").primaryKey().notNull(),
+	data: date().notNull(),
+	mes: integer().notNull(),
+	ano: integer().notNull(),
+	diaSemana: varchar("dia_semana", { length: 15 }).notNull(),
+	valor: numeric({ precision: 10, scale:  2 }).default('0').notNull(),
+	dataVencimento: date("data_vencimento").notNull(),
+	dataPagamento: date("data_pagamento"),
+	status: varchar({ length: 45 }).default('Pendente').notNull(),
+	formaPagamento: varchar("forma_pagamento", { length: 45 }),
+	nomeFornecedor: varchar("nome_fornecedor", { length: 45 }).notNull(),
+	documentoFornecedor: varchar("documento_fornecedor", { length: 45 }).notNull(),
+	descricao: varchar({ length: 255 }).notNull(),
 });
