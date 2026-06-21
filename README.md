@@ -32,4 +32,4 @@ npm run db:generate # Gera migrations
 ## Hospedagem
 
 - Serviço hospedado na [Render](https://dashboard.render.com/)
-- Banco de dados PostgreSQL hospedado na [Neon](https://console.neon.tech/app/)
+- Banco de dados PostgreSQL hospedado no [Supabase](https://supabase.com/dashboard)

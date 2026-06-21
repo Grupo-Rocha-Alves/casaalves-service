@@ -18,7 +18,7 @@ export const tbLogs = pgTable("tb_logs", {
 	idLog: serial("id_log").primaryKey().notNull(),
 	idUsuario: integer("id_usuario").notNull(),
 	acao: varchar({ length: 255 }).notNull(),
-	dataHora: timestamp("data_hora", { mode: 'string', withTimezone: true }).default(sql`CURRENT_TIMESTAMP AT TIME ZONE 'America/Sao_Paulo'`).notNull(),
+	dataHora: timestamp("data_hora", { mode: 'string', withTimezone: true }).default(sql`(CURRENT_TIMESTAMP AT TIME ZONE 'America/Sao_Paulo')`).notNull(),
 });
 
 export const tbUsuarios = pgTable("tb_usuarios", {
